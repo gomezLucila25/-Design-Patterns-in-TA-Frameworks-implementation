@@ -1,6 +1,7 @@
 package com.epam.framework.utils;
 
 import com.epam.framework.core.DriverManager;
+import io.qameta.allure.Attachment;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,17 +22,25 @@ public class ScreenshotUtils {
 
     private ScreenshotUtils() {}
 
+    /**
+     * Saves screenshot to disk AND attaches it to the Allure report.
+     * Called from TestListener on test failure.
+     */
     public static String takeScreenshot(String testName) {
-        log.debug("Attempting to capture screenshot for test: [{}]", testName);
+        log.debug("Capturing screenshot for test: [{}]", testName);
         try {
             TakesScreenshot ts = (TakesScreenshot) DriverManager.getDriver();
-            File source = ts.getScreenshotAs(OutputType.FILE);
+            byte[] bytes = ts.getScreenshotAs(OutputType.BYTES);
 
+            // Attach to Allure report
+            attachScreenshotToAllure(bytes);
+
+            // Also save to disk for CI artifact archiving
             String timestamp = LocalDateTime.now().format(FORMATTER);
-            String filename  = SCREENSHOT_DIR + testName + "_" + timestamp + ".png";
+            String filename = SCREENSHOT_DIR + testName + "_" + timestamp + ".png";
             File destination = new File(filename);
+            FileUtils.writeByteArrayToFile(destination, bytes);
 
-            FileUtils.copyFile(source, destination);
             log.info("SCREENSHOT SAVED — test: [{}], path: [{}]", testName,
                     destination.getAbsolutePath());
             return destination.getAbsolutePath();
@@ -43,5 +52,14 @@ public class ScreenshotUtils {
             log.error("Unexpected error during screenshot capture for test: [{}]", testName, e);
             return null;
         }
+    }
+
+    /**
+     * Allure attachment — the byte[] returned by this method is embedded
+     * directly in the Allure report as a PNG image.
+     */
+    @Attachment(value = "Failure Screenshot", type = "image/png")
+    public static byte[] attachScreenshotToAllure(byte[] screenshot) {
+        return screenshot;
     }
 }

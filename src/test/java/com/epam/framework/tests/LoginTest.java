@@ -3,13 +3,19 @@ package com.epam.framework.tests;
 import com.epam.framework.model.User;
 import com.epam.framework.pages.InventoryPage;
 import com.epam.framework.pages.LoginPage;
+import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Feature("Authentication")
 public class LoginTest extends BaseTest {
 
-    @Test(groups = {"smoke", "regression"}, description = "Valid login redirects to inventory page")
+    @Story("Valid login")
+    @Description("Standard user logs in and lands on the inventory page")
+    @Test(groups = {"smoke", "regression"})
     public void testValidLogin() {
         log.info("TEST: valid login with standard user");
 
@@ -20,7 +26,9 @@ public class LoginTest extends BaseTest {
         log.info("TEST ASSERTION PASSED: inventory page title is 'Products'");
     }
 
-    @Test(groups = {"regression"}, description = "Locked user cannot login")
+    @Story("Locked user")
+    @Description("Locked user sees an error message and cannot proceed")
+    @Test(groups = {"regression"})
     public void testLockedUserLogin() {
         log.info("TEST: locked user receives error message on login");
 
@@ -35,7 +43,9 @@ public class LoginTest extends BaseTest {
         log.info("TEST ASSERTION PASSED: locked user error message displayed");
     }
 
-    @Test(groups = {"regression"}, description = "Empty credentials show error")
+    @Story("Invalid credentials")
+    @Description("Empty credentials trigger a validation error")
+    @Test(groups = {"regression"})
     public void testEmptyCredentials() {
         log.info("TEST: empty credentials trigger validation error");
 
@@ -47,7 +57,9 @@ public class LoginTest extends BaseTest {
         log.info("TEST ASSERTION PASSED: error displayed for empty credentials");
     }
 
-    @Test(groups = {"regression"}, description = "Wrong password shows error")
+    @Story("Invalid credentials")
+    @Description("Wrong password triggers a credentials mismatch error")
+    @Test(groups = {"regression"})
     public void testWrongPassword() {
         log.info("TEST: wrong password triggers error");
         User badUser = new User(config.getStandardUser(), "wrong_password");
@@ -61,7 +73,9 @@ public class LoginTest extends BaseTest {
         log.info("TEST ASSERTION PASSED: wrong password error message displayed");
     }
 
-    @Test(groups = {"smoke", "regression"}, description = "Logout returns to login page")
+    @Story("Logout")
+    @Description("Authenticated user can logout and return to the login page")
+    @Test(groups = {"smoke", "regression"})
     public void testLogout() {
         log.info("TEST: logout returns user to login page");
 

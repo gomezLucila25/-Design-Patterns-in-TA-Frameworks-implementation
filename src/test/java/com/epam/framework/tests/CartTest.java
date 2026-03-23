@@ -2,15 +2,21 @@ package com.epam.framework.tests;
 
 import com.epam.framework.pages.CartPage;
 import com.epam.framework.pages.InventoryPage;
+import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Feature("Shopping Cart")
 public class CartTest extends BaseTest {
 
     private static final String PRODUCT_NAME = "Sauce Labs Backpack";
 
-    @Test(groups = {"smoke", "regression"}, description = "Add product to cart updates cart badge")
+    @Story("Add to cart")
+    @Description("Adding a product updates the cart badge counter")
+    @Test(groups = {"smoke", "regression"})
     public void testAddProductToCart() {
         log.info("TEST: adding product to cart increments badge count");
 
@@ -24,7 +30,9 @@ public class CartTest extends BaseTest {
         log.info("TEST ASSERTION PASSED: cart badge shows 1");
     }
 
-    @Test(groups = {"regression"}, description = "Cart page shows added product")
+    @Story("Cart contents")
+    @Description("Cart page displays the product added from inventory")
+    @Test(groups = {"regression"})
     public void testCartContainsAddedProduct() {
         log.info("TEST: cart page displays the product that was added");
 
@@ -39,7 +47,9 @@ public class CartTest extends BaseTest {
         log.info("TEST ASSERTION PASSED: cart contains [{}]", PRODUCT_NAME);
     }
 
-    @Test(groups = {"regression"}, description = "Add multiple products to cart")
+    @Story("Add to cart")
+    @Description("Adding two products increments cart badge to 2")
+    @Test(groups = {"regression"})
     public void testAddMultipleProducts() {
         log.info("TEST: adding two products increments cart badge to 2");
 
